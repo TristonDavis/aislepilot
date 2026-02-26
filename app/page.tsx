@@ -9,7 +9,7 @@ export default function Home() {
             AislePilot — Planner-first MVP
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Quickstart flows: <Link className="font-medium text-blue-600" href="/signup">Sign up</Link> → <Link className="font-medium text-blue-600" href="/dashboard">Dashboard</Link> → create weddings and intake forms.
+            Quickstart flows: <Link className="font-medium text-blue-600" href="/signup">Sign up</Link> → <Link className="font-medium text-blue-600" href="/dashboard">Dashboard</Link> → create weddings and inquiry forms.
           </p>
         </div>
 

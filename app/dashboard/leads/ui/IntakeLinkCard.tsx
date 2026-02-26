@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+// @ts-expect-error: No type definitions for 'qrcode'
 import QRCode from "qrcode";
 
 export default function IntakeLinkCard({
@@ -62,7 +63,7 @@ export default function IntakeLinkCard({
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full" style={{ background: brandColor }} />
-            <p className="text-sm font-medium">{orgName} intake link</p>
+            <p className="text-sm font-medium">{orgName} inquiry link</p>
           </div>
 
           <p className="mt-1 text-sm text-neutral-600">
@@ -75,6 +76,9 @@ export default function IntakeLinkCard({
               value={absoluteUrl}
               className="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm"
             />
+            {qrDataUrl && (
+              <img src={qrDataUrl} alt="Intake link QR code" className="h-[180px] w-[180px] ml-4" />
+            )}
             <button
               type="button"
               onClick={copy}
@@ -106,7 +110,7 @@ export default function IntakeLinkCard({
             {qrDataUrl ? (
               <img
                 src={qrDataUrl}
-                alt="Intake link QR code"
+                alt="Inquiry link QR code"
                 className="h-[180px] w-[180px]"
               />
             ) : (

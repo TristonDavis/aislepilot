@@ -62,16 +62,16 @@ Implemented minimal planner-first workflows and scaffold pages:
 
 - **/signup** — sign up (email/password)
 - **/login** — sign in (password or magic link)
-- **/dashboard** — authenticated dashboard; create workspaces/weddings
+- **/dashboard** — authenticated dashboard; create organizations/weddings
 - **/weddings** — list of weddings for the current user
 - **/weddings/new** — create a wedding (generates a public slug)
-- **/i/[slug]** — public intake form for a wedding (POSTs to `/api/intakes`)
+- **/i/[slug]** — public intake form for a wedding (POSTs to `/api/intake/[slug]`)
 
 There are also API route handlers:
 - **POST /api/weddings** — creates weddings for authenticated users
-- **POST /api/intakes** — accepts public intake submissions
+- **POST /api/intake/[slug]** — accepts public intake submissions
 
-Note: The pages try to use Supabase tables (`workspaces`, `weddings`, `intakes`). If these tables do not exist yet you'll see helpful error messages in the UI. For a complete demo, create these tables in your Supabase project or modify the handlers to match your schema.
+Note: The pages try to use Supabase tables (`organizations`, `weddings`, `leads`). If these tables do not exist yet you'll see helpful error messages in the UI. For a complete demo, create these tables in your Supabase project or modify the handlers to match your schema.
 
 ---
 

@@ -30,27 +30,27 @@ export default async function DashboardPage() {
     );
   }
 
-  // Try to load user's workspaces (table may not exist yet)
-  const { data: workspaces, error } = await supabase.from('workspaces').select('*').eq('owner_id', session.user.id).order('created_at', { ascending: false });
+  // Try to load user's organizations (table may not exist yet)
+  const { data: organizations, error } = await supabase.from('organizations').select('*').eq('owner_id', session.user.id).order('created_at', { ascending: false });
 
   return (
     <div className="p-6">
       <h2 className="text-2xl font-semibold">Welcome, {session.user.email}</h2>
       <div className="mt-4">
-        <h3 className="text-lg font-medium">Workspaces</h3>
+        <h3 className="text-lg font-medium">Organizations</h3>
         {error ? (
-          <div className="mt-2 text-sm text-red-600">Could not load workspaces: {error.message}. You can create one below.</div>
+          <div className="mt-2 text-sm text-red-600">Could not load organizations: {error.message}. You can create one below.</div>
         ) : null}
 
         <div className="mt-3">
-          {workspaces && workspaces.length > 0 ? (
+          {organizations && organizations.length > 0 ? (
             <ul className="space-y-2">
-              {workspaces.map((w: any) => (
-                <li key={w.id} className="p-2 border rounded">{w.name}</li>
+              {organizations.map((o: any) => (
+                <li key={o.id} className="p-2 border rounded">{o.name}</li>
               ))}
             </ul>
           ) : (
-            <div className="text-sm text-zinc-600">No workspaces yet.</div>
+            <div className="text-sm text-zinc-600">No organizations yet.</div>
           )}
         </div>
 

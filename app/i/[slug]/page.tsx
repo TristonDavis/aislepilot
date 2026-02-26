@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useMemo, useState } from "react";
-import { z } from "zod";
+import { email, z } from "zod";
 
 const FormSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -49,7 +49,12 @@ export default function IntakePage({ params }: { params: Promise<{ slug: string 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...parsed.data,
+          slug,
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          event_date: form.event_date,
+          message: form.message,
           source: "share_link",
         }),
       });

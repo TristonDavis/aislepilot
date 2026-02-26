@@ -17,12 +17,12 @@ export default async function LeadsPage({
   .select("active_org_id")
   .single();
 
-const orgId = profile?.active_org_id;
+const activeOrgId = profile?.active_org_id;
 
 const { data: org } = await supabase
   .from("organizations")
   .select("id, name, slug, brand_color")
-  .eq("id", orgId)
+  .eq("id", activeOrgId)
   .single();
 
 
@@ -43,7 +43,7 @@ const { data: org } = await supabase
         <div>
           <h1 className="text-2xl font-semibold">Leads</h1>
           <p className="mt-2 text-sm text-neutral-600">
-            New inquiries from your intake link.
+            New inquiries from your inquiry link.
           </p>
         </div>
 
@@ -55,7 +55,7 @@ const { data: org } = await supabase
         </Link>
       </div>
 
-      {/* Intake link card */}
+      {/* Inquiry link card */}
       {org?.slug ? (
         <IntakeLinkCard
           orgName={org.name}
@@ -96,7 +96,7 @@ const { data: org } = await supabase
       {!leads?.length ? (
         <div className="rounded-lg border border-neutral-200 p-6">
           <p className="text-sm text-neutral-600">
-            No leads yet. Share your intake link with couples above.
+            No leads yet. Share your inquiry link with couples above.
           </p>
         </div>
       ) : (

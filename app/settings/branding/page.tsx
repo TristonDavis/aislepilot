@@ -2,7 +2,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import BrandingForm from "./ui";
 
 export default async function BrandingPage() {
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
 
   // pick first org for v1 (later: org switcher)
   const { data: member } = await supabase
@@ -24,7 +24,7 @@ export default async function BrandingPage() {
       <div>
         <h1 className="text-2xl font-semibold">Branding</h1>
         <p className="mt-2 text-sm text-neutral-600">
-          Update your workspace name and brand color.
+          Update your organization name and brand color.
         </p>
       </div>
 

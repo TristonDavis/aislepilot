@@ -34,7 +34,7 @@ export default async function WeddingsPage() {
                 <div className="font-medium">{w.name}</div>
                 <div className="text-sm text-zinc-600">Slug: {w.slug}</div>
                 <div className="mt-2">
-                  <a className="text-blue-600" href={`/i/${w.slug}`} target="_blank" rel="noreferrer">View intake form</a>
+                  <a className="text-blue-600" href={`/i/${w.slug}`} target="_blank" rel="noreferrer">View inquiry form</a>
                 </div>
               </li>
             ))}

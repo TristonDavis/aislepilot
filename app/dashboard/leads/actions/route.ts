@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     return NextResponse.redirect(new URL("/dashboard/leads", req.url));
   }
 
-  const supabase = createRouteHandlerClient({ cookies });
+  const supabase = await createSupabaseServerClient();
 
   if (action === "mark_contacted") {
     await supabase.from("leads").update({ status: "contacted" }).eq("id", leadId);
@@ -22,8 +22,10 @@ export async function POST(req: Request) {
     // 1) Fetch lead
     const { data: lead } = await supabase
       .from("leads")
-      .select("id, org_id, name, email, phone, event_date, message")
-      .eq("id", leadId)
+      .select("*")
+      .eq("org_id", leadId)
+      // .select("id, org_id, name, email, phone, event_date, message")
+      // .eq("id", leadId)
       .single();
 
     if (!lead) {

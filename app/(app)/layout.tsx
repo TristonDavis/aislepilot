@@ -6,11 +6,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const { data: member } = await supabase
     .from("org_members")
-    .select("org_id")
+    .select("organizations")
     .limit(1)
     .single();
 
-  const orgId = member?.org_id;
+  const orgId = member?.organizations?.id;
 
   const { data: org } = await supabase
     .from("organizations")
