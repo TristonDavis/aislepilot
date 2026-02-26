@@ -1,21 +1,18 @@
 import Link from 'next/link';
-import { createClient } from '@supabase/supabase-js';
-import { cookies } from 'next/headers';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export default async function DashboardPage() {
-  const cookieStore = await cookies();
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      global: {
-        headers: {
-          cookie: cookieStore.toString(),
-        },
-      },
-    }
-  );
-  const { data: { session } = {}, error: sessionError } = await supabase.auth.getSession();
+type DashboardPageProps = {
+  searchParams?: Promise<{ note?: string }>;
+};
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  const supabase = await createSupabaseServerClient();
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
 
   if (sessionError) {
     return <div className="p-6">Error checking session: {sessionError.message}</div>;
@@ -30,12 +27,25 @@ export default async function DashboardPage() {
     );
   }
 
-  // Try to load user's organizations (table may not exist yet)
-  const { data: organizations, error } = await supabase.from('organizations').select('*').eq('owner_id', session.user.id).order('created_at', { ascending: false });
+  const { data: organizations, error } = await supabase
+    .from('organizations')
+    .select('*')
+    .eq('owner_user_id', session.user.id)
+    .order('created_at', { ascending: false });
+
+  const bannerText =
+    resolvedSearchParams?.note === 'already-signed-in'
+      ? 'You were already signed in, so we redirected you to your dashboard.'
+      : resolvedSearchParams?.note === 'signed-up'
+      ? 'Sign-up complete. Your initial workspace setup has been attempted.'
+      : null;
 
   return (
     <div className="p-6">
       <h2 className="text-2xl font-semibold">Welcome, {session.user.email}</h2>
+
+      {bannerText ? <div className="mt-3 rounded border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">{bannerText}</div> : null}
+
       <div className="mt-4">
         <h3 className="text-lg font-medium">Organizations</h3>
         {error ? (
@@ -45,7 +55,7 @@ export default async function DashboardPage() {
         <div className="mt-3">
           {organizations && organizations.length > 0 ? (
             <ul className="space-y-2">
-              {organizations.map((o: any) => (
+              {organizations.map((o: { id: string; name: string | null }) => (
                 <li key={o.id} className="p-2 border rounded">{o.name}</li>
               ))}
             </ul>
