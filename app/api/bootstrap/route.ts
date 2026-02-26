@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { useRouter } from 'next/navigation';
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function slugify(input: string) {
@@ -69,7 +67,8 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ok: true, orgId: org.id }, { status: 200 });
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message ?? "Server error" }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Server error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
