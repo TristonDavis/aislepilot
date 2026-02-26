@@ -7,8 +7,10 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 export default function SignUpPage() {
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
   const router = useRouter();
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -37,13 +39,26 @@ export default function SignUpPage() {
     setError(null);
     setInfo(null);
 
-    if (!email || !password) {
-      setError('Enter email and password');
+    const trimmedUsername = username.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+
+    if (!trimmedUsername || !trimmedEmail || !password) {
+      setError('Enter username, email, and password');
       return;
     }
 
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email: trimmedEmail,
+      password,
+      options: {
+        data: {
+          username: trimmedUsername,
+          phone: trimmedPhone || null,
+        },
+      },
+    });
 
     if (error) {
       setLoading(false);
@@ -60,7 +75,7 @@ export default function SignUpPage() {
     const bootstrapResponse = await fetch('/api/bootstrap', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orgName: `${email.split('@')[0] || 'My'} Org` }),
+      body: JSON.stringify({ orgName: `${trimmedUsername || 'My'} Org` }),
     });
 
     if (!bootstrapResponse.ok) {
@@ -87,8 +102,10 @@ export default function SignUpPage() {
     <div className="max-w-md mx-auto p-6 rounded border mt-12">
       <h2 className="text-2xl font-semibold mb-4">Sign up</h2>
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
-        <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" className="p-2 border rounded" />
-        <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password" type="password" className="p-2 border rounded" />
+        <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" className="p-2 border rounded" autoComplete="username" />
+        <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" type="email" className="p-2 border rounded" autoComplete="email" />
+        <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="create password" type="password" className="p-2 border rounded" autoComplete="new-password" />
+        <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="phone number (optional)" type="tel" className="p-2 border rounded" autoComplete="tel" />
         <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white" disabled={loading}>{loading ? 'Signing up…' : 'Sign up'}</button>
         {error && <div role="status" className="text-sm text-red-600">{error}</div>}
         {info && <div role="status" className="text-sm text-zinc-700">{info}</div>}
